@@ -1,0 +1,2 @@
+print "in interrupt 7";
+halt;
