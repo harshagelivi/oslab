@@ -1,0 +1,5 @@
+START
+MOV T0,  "in int 1"
+OUT T0
+IRET
+HALT
