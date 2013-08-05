@@ -1,1 +1,7 @@
 print "exception is raised";
+print PTBR;
+print BP;
+print SP;
+print EFR;
+print IP;
+

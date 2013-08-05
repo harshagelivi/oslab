@@ -1,2 +1,63 @@
-print "in int 1";
+print "int 1";
+
+alias physicalSP S0;
+physicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
+
+// Get system call no. from the stack and put it in a register
+alias sysCallNo S1;
+sysCallNo = ([PTBR + 2 * ((SP-1) / 512)] * 512) + ((SP-1) % 512);
+sysCallNo = [sysCallNo];
+
+// Get arguments from stack and put it in registers
+alias name S2;
+name = [([PTBR + 2 * ((SP-3) / 512)] * 512) + ((SP-3) % 512)];
+
+alias dl S3;
+dl = DISK_LIST + 24;
+
+alias res S4;
+alias ft S5;
+alias eft S6;
+ft = FAT;
+
+if ( sysCallNo == 1) then
+	// Implementation of Create
+	while((dl-DISK_LIST<448)&&([dl]==1)) do
+		dl = dl+1;
+	endwhile;
+	if(dl-DISK_LIST==448) then
+		res = -1;
+	else
+		res = 1;
+		while((ft - FAT<512)&&([ft]!=name)) do
+			ft = ft + 8;
+			if([ft+2]==-1) then
+				eft = ft;
+			endif;	
+		endwhile;
+		if(ft-FAT==512) then
+			[eft] = name;
+			[eft + 1] = 0;
+			[eft + 2] = dl-DISK_LIST;
+		else
+			eft = ft;
+			if([eft+2]==-1) then
+			[eft + 2] = dl-DISK_LIST;
+		endif;
+		load(1,[eft+2]);
+		[DISK_LIST + [eft + 2]] = 1; 
+	endif;
+	print res;
+	print dl;
+	print eft;
+	print ft;
+	print [eft];
+endif;
+//if ( sysCallNo == 4) then
+	// Implementation of Delete
+	
+//endif;	
+[([PTBR + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = res;
+store(5,19);
+store(6,20);
 ireturn;

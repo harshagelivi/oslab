@@ -1,11 +1,7 @@
-decl
-	integer i;
-enddecl	
-integer main(){
-	i=0;
-	while(i<30) do
-		print(i);
-		i=i+1;
-	endwhile;	
+// APL program to invoke Create
+
+integer main()
+{	
+	print("in init");
 	return 0;
-}	
+}

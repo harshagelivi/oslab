@@ -1,0 +1,58 @@
+print "in timer";
+alias c_pid S0;
+c_pid = (PTBR - 1024) / 4;
+alias c_pcb S1;
+c_pcb = READY_LIST + 32 * c_pid;
+[c_pcb + 1] = 1;
+[ c_pcb + 2 ] = BP;
+[ c_pcb + 3 ] = SP - 1;
+alias physicalSP S2;
+physicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
+[ c_pcb + 4 ] = [ physicalSP ];
+[ c_pcb + 5 ] = PTBR;
+[ c_pcb + 6 ] = PTLR;
+[ c_pcb + 7 ] = R0;
+[ c_pcb + 8 ] = R1;
+[ c_pcb + 9 ] = R2;
+[ c_pcb + 10 ] = R3;
+[ c_pcb + 11 ] = R4;
+[ c_pcb + 12 ] = R5;
+[ c_pcb + 13 ] = R6;
+[ c_pcb + 14 ] = R7;
+
+alias newpcb S3;
+alias newpid S4;
+if(c_pid==31) then
+	newpid = 0;
+else
+	newpid = c_pid + 1;
+endif;	
+newpcb = READY_LIST + 32 * newpid;
+while([newpcb + 1]!=1) do
+	if(newpid==31) then
+		newpid = 0;
+	else
+		newpid = newpid + 1;
+	endif;
+	newpcb = READY_LIST + 32 * newpid;
+endwhile;
+
+BP = [newpcb + 2];
+SP = [newpcb + 3];
+PTBR = [newpcb + 5];
+PTLR = [newpcb + 6];
+R0 = [newpcb + 7];
+R1 = [newpcb + 8];
+R2 = [newpcb + 9];
+R3 = [newpcb + 10];
+R4 = [newpcb + 11];
+R5 = [newpcb + 12];
+R6 = [newpcb + 13];
+R7 = [newpcb + 14];
+
+SP = SP + 1; 
+alias newphysicalSP S2; 
+newphysicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512); 
+[ newphysicalSP ] = [ newpcb + 4 ];
+[newpcb + 1] = 2;
+ireturn;
