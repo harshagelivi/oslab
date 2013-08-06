@@ -1,4 +1,4 @@
-print "in os startup code";
+print "in startup";
 //loading exception handler
 load(7,1);
 load(8,2);
@@ -15,7 +15,7 @@ load(27,23);
 //setting up init pcb
 [READY_LIST + 0] = 0;
 PTBR = 1024;
-PTLR = 2;
+PTLR = 4;
 [PTBR + 0] = 25;
 [PTBR + 1] = "01";
 [PTBR + 2] = 26;

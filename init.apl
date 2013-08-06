@@ -2,6 +2,9 @@
 
 integer main()
 {	
-	print("in init");
+	integer a;
+	a=Create("hello");
+	a=Create("hello");
+	a=Create("hello");		
 	return 0;
 }

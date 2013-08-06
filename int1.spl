@@ -39,13 +39,11 @@ if ( sysCallNo == 1) then
 			[eft] = name;
 			[eft + 1] = 0;
 			[eft + 2] = dl-DISK_LIST;
-		else
-			eft = ft;
-			if([eft+2]==-1) then
-			[eft + 2] = dl-DISK_LIST;
+			[dl] = 1;
+			print dl;
 		endif;
 		load(1,[eft+2]);
-		[DISK_LIST + [eft + 2]] = 1; 
+
 	endif;
 	print res;
 	print dl;
@@ -55,7 +53,7 @@ if ( sysCallNo == 1) then
 endif;
 //if ( sysCallNo == 4) then
 	// Implementation of Delete
-	
+
 //endif;	
 [([PTBR + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = res;
 store(5,19);
