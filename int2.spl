@@ -1,1 +1,92 @@
-halt;
+print "int 2";
+
+//aliases
+alias physicalSP S0;
+alias sysno S1;
+alias arg1 S2;
+alias res S3;
+alias ft S4;
+alias fat_index S5;
+alias i S6;
+alias perp S7;
+alias soft_e S8;
+alias soft_ind S9;
+alias perp_ind S10;
+
+physicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
+sysno = ([PTBR + 2 * ((SP-1) / 512)] * 512) + ((SP-1) % 512);
+sysno = [sysno];
+perp = READY_LIST + ((PTBR - 1024)/8)*32 + 15;
+arg1 = [([PTBR + 2 * ((SP-3) / 512)] * 512) + ((SP-3) % 512)];		
+
+if(sysno == 2) then
+	print "in open";
+	ft = FAT;
+	while((ft - FAT < 512)&&([ft]!=arg1)) do
+		ft = ft + 8;
+	endwhile;
+	if(ft - FAT == 512) then
+		res = -1;
+	else
+		fat_index = (ft - FAT)/8;
+		i = 0;
+		soft_e = -1;
+		while((i<128)&&([FILE_TABLE+i]!=fat_index))do
+			i = i + 2;
+			if([FILE_TABLE + i]==-1)then
+				soft_e = FILE_TABLE + i; 
+			endif;
+		endwhile;
+		if(i==128)then
+			if(soft_e != -1)then
+				[soft_e] = fat_index;
+				soft_ind = (soft_e - FILE_TABLE)/2;
+			else
+				res=-1;
+			endif;	
+		else
+			soft_ind = i/2;
+			soft_e = FILE_TABLE + i;
+		endif;
+		i = 0;
+		while((i<16)&&([perp + i]!=-1))do
+			i = i + 2;
+		endwhile;
+		if(i==16)then
+			res = -1;
+		else
+			perp_ind = i/2;
+			res = perp_ind;
+			[perp + i] = soft_ind;
+			[perp + i + 1] = 0;
+			[soft_e + 1] = [soft_e + 1] + 1;
+		endif;	
+	endif;
+	breakpoint;
+endif;
+if(sysno==3)then
+	print "in close";
+	if((arg1>=0)&&(arg1<8))then
+		perp = perp + arg1*2;
+		if([perp]!=-1)then
+			soft_ind = [perp];
+			soft_e = FILE_TABLE + soft_ind*2;
+			if([soft_e + 1]==1)then
+				[soft_e] = -1;
+				[soft_e + 1] = 0;
+			else
+				[soft_e + 1] = [soft_e + 1] - 1;	
+			endif;
+			[perp] = -1;
+			[perp + 1] = -1;
+			res = 0;
+		else
+			res = -1;
+		endif;
+	else
+		res = -1;	
+	endif;
+	breakpoint;
+endif;
+[([PTBR + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = res;
+ireturn;

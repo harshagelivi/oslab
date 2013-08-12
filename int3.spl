@@ -1,1 +1,72 @@
-halt;
+print "in int3";
+
+//aliases
+alias sysno S0;
+alias nlsk S1;
+alias fd S2;
+alias perp S3;
+alias res S4;
+alias soft_ind S5;
+alias fat_ind S6;
+alias file_size S7;
+alias wread S8;
+alias bblock S9;
+alias bnum S10;
+
+sysno = [([PTBR + 2 * ((SP-1) / 512)] * 512) + ((SP-1) % 512)];
+nlsk = [([PTBR + 2 * ((SP-3) / 512)] * 512) + ((SP-3) % 512)];
+fd = [([PTBR + 2 * ((SP-4) / 512)] * 512) + ((SP-4) % 512)];
+perp = READY_LIST + ((PTBR - 1024)/8)*32 + 15;
+
+if(sysno==6)then
+	print "in seek";
+	if((fd>=0)&&(fd<8))then
+		soft_ind = [perp + fd*2];
+		if(soft_ind!=-1)then
+			fat_ind = [FILE_TABLE + soft_ind*2]; 
+			file_size = [FAT + fat_ind*8 + 1];
+			if((nlsk>=0)&&(nlsk<file_size))then
+				[perp + fd*2 + 1] = nlsk;
+				res = 0;
+			else
+				res = -1;
+			endif;
+		else
+			res = -1;
+		endif;
+	else
+		res = -1;
+	endif;
+	breakpoint;
+endif;
+
+if(sysno==7)then
+	print "in read";
+	if((fd>=0)&&(fd<8))then
+		soft_ind = [perp + fd*2];
+		if(soft_ind!=-1)then
+			fat_ind = [FILE_TABLE + soft_ind*2]; 
+			nlsk = [perp + fd*2 + 1];
+			bblock = [FAT + fat_ind*8 + 2];
+			load(1,bblock);
+			file_size = [FAT + fat_ind*8 + 1];
+			if(nlsk==file_size)then
+				res = -1;
+			else
+				bnum = [512 + nlsk/512];
+				load(1,bnum);
+				wread = [512 + nlsk%512];
+				[([PTBR + 2 * ((SP-3) / 512)] * 512) + ((SP-3) % 512)] = wread;
+				[perp + fd*2 + 1] = [perp + fd*2 + 1] + 1;
+				res = 0;
+			endif;
+		else
+			res = -1;
+		endif;
+	else
+		res = -1;
+	endif;
+	breakpoint;	
+endif;
+[([PTBR + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = res;
+ireturn;

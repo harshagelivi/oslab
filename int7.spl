@@ -1,2 +1,2 @@
-print "in interrupt 7";
+print "int 7";
 halt;

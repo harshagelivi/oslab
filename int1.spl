@@ -1,34 +1,34 @@
 print "int 1";
 
+//aliases
 alias physicalSP S0;
-physicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
-
-// Get system call no. from the stack and put it in a register
-alias sysCallNo S1;
-sysCallNo = ([PTBR + 2 * ((SP-1) / 512)] * 512) + ((SP-1) % 512);
-sysCallNo = [sysCallNo];
-
-// Get arguments from stack and put it in registers
+alias sysno S1;
 alias name S2;
-name = [([PTBR + 2 * ((SP-3) / 512)] * 512) + ((SP-3) % 512)];
-
 alias dl S3;
-dl = DISK_LIST + 24;
-
 alias res S4;
 alias ft S5;
 alias eft S6;
-ft = FAT;
+alias ft_ind S7;
+alias i S8;
+alias bblock S9;
+alias bnum S10;
+alias j S11;
 
-if ( sysCallNo == 1) then
-	// Implementation of Create
+name = [([PTBR + 2 * ((SP-3) / 512)] * 512) + ((SP-3) % 512)];
+sysno = [([PTBR + 2 * ((SP-1) / 512)] * 512) + ((SP-1) % 512)];
+dl = DISK_LIST + 24;
+ft = FAT;
+physicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
+
+if ( sysno == 1) then
+	print "in create";
 	while((dl-DISK_LIST<448)&&([dl]==1)) do
 		dl = dl+1;
 	endwhile;
 	if(dl-DISK_LIST==448) then
 		res = -1;
 	else
-		res = 1;
+		res = 0;
 		while((ft - FAT<512)&&([ft]!=name)) do
 			ft = ft + 8;
 			if([ft+2]==-1) then
@@ -40,21 +40,63 @@ if ( sysCallNo == 1) then
 			[eft + 1] = 0;
 			[eft + 2] = dl-DISK_LIST;
 			[dl] = 1;
-			print dl;
+			load(1,dl-DISK_LIST);
+			while(i<512) do
+				[SCRATCHPAD+i] = -1;
+				i = i+1;
+			endwhile;			
+			store(1, dl-DISK_LIST);	
 		endif;
 		load(1,[eft+2]);
-
 	endif;
-	print res;
-	print dl;
-	print eft;
-	print ft;
-	print [eft];
+	breakpoint;
 endif;
-//if ( sysCallNo == 4) then
-	// Implementation of Delete
+if ( sysno == 4) then
+	print "in delete";
+	ft = FAT;
+	while((ft - FAT<512)&&([ft]!=name)) do
+		ft = ft + 8;
+	endwhile;
+	if(ft-FAT==512)then
+		res = -1;
+	else
+		ft_ind = (ft-FAT)/8;
+		eft = FILE_TABLE;
+		while((eft-FILE_TABLE<128)&&([eft]!=ft_ind))do
+			print eft-FILE_TABLE;
+			eft = eft + 2;
+		endwhile;
+		if(eft-FILE_TABLE!=128)then
+			res = -1;
+		else
+			bblock = [ft + 2];
+			i = 0;
+			while(i<=512)do
+				load(1,bblock);
+				if(i==512)then
+					bnum = bblock;
+				else
+					bnum = [SCRATCHPAD + i];
+				endif;	
+				if(bnum!=-1)then
+					load(1,bnum);
+					j = 0;
+					while(j<512)do
+						[SCRATCHPAD + j] = "";
+						j = j + 1;
+					endwhile;
+					[DISK_LIST + bnum] = 0;
+					store(1,bnum);
+				endif;
+				i = i + 1;
+			endwhile;
+			[ft + 0] = -1;
+			[ft + 2] = -1;	
+		endif;	
+	endif;
+	breakpoint;
+endif;
 
-//endif;	
 [([PTBR + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = res;
 store(5,19);
 store(6,20);

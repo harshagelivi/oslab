@@ -3,8 +3,8 @@
 integer main()
 {	
 	integer a;
-	a=Create("hello");
-	a=Create("hello");
-	a=Create("hello");		
+	a=Open("two");
+	a=Seek(a,538);
+	print(a);
 	return 0;
 }
