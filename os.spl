@@ -77,6 +77,7 @@ PTLR = 4;
 [PTBR + 7] = "01";
 SP = 3 * 512;
 [28 * 512] = 0;
+
 //setting per-process page table of init
 i = READY_LIST + 15;
 while(i<READY_LIST + 31) do
