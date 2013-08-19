@@ -2,16 +2,17 @@
 
 integer main()
 {	
-	integer a,b;
-	a=Create("file");
-	a=Open("file");
-	print(Write(a,"abcdefghijklmnopqrst"));
-	print(Close(a));
-	a=Open("file");
-	print(Seek(a,0));
-	print(Read(a,b));
-	print(b);
-	print(Close(a));
-	print(Delete("file"));
+	integer a,b,c,d,e,f,g;
+	a=Open("hello.dat");
+	print("before fork");
+	c=Fork();
+	print("after fork");
+	if(c==-2)then
+		print("in child");
+		print("oo la la");
+	else
+		print("in parent");
+	endif;		
+	print("yay");
 	return 0;
 }

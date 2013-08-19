@@ -1,5 +1,5 @@
 START
-MOV T0,  "int 7"
+MOV T0,  "in int7"
 OUT T0
 HALT
 HALT

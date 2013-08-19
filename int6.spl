@@ -1,1 +1,66 @@
-halt;
+print "int 6";
+
+//aliases
+alias psp S0;
+alias sysno S1;
+alias file S2;
+alias bblock S3;
+alias novp S4;
+alias nopa S5;
+alias nonp S6;
+alias i S7;
+alias j S8;
+alias res S9;
+
+psp = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
+sysno = [psp - 1];
+file = [psp-3];
+
+if(sysno==9)then
+	print "in exec";
+	i = FAT;
+	while(([i]!=file)&&(i<DISK_LIST))do
+		i = i + 8;
+	endwhile;
+	if(i==DISK_LIST)then
+		res = -1;
+	else
+		nonp = [i + 1]/512;
+		bblock = [i + 2];
+		j = PTBR;
+		novp = 0;
+		while(j<PTBR+6)do
+			if([j]!=-1)then
+				novp = novp + 1;
+			endif;
+			j = j + 1;
+		endwhile;
+		if(novp<nonp)then
+			j = MEM_LIST+ 29;
+			nopa = 0;
+			while((nopa!=nonp-novp)&&(j<FILE_TABLE))do
+				if([j]==0)
+					nopa = nopa + 1;
+				endif;
+				j = j + 1;	
+			endwhile;
+			if(nopa!=nonp-novp)then
+				res = -1;
+			else
+				load(1,bblock);
+				i = PTBR;
+				j = SCRATCHPAD;
+				while(i<PTBR+6)do
+					if([i]!=-1)then
+						load([i],[j]);
+						j = j + 1;
+					endif;
+				endwhile;
+			endif;
+			
+		else
+			
+		endif;
+	endif;
+endif;	
+

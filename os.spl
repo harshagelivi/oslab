@@ -61,6 +61,18 @@ while(i-MEM_LIST<29)do
 	[i] = 1;
 	i = i + 1;
 endwhile;
+i = MEM_LIST + 29;
+while(i<FILE_TABLE)do
+	[i] = 0;
+	i = i + 1;
+endwhile;
+
+//setting all pcb state entries to 0
+i = READY_LIST;
+while(i<FAT)do
+	[i + 1] = 0;
+	i = i + 32;
+endwhile;
 
 //setting up init pcb
 [READY_LIST + 0] = 0;
@@ -78,31 +90,10 @@ PTLR = 4;
 SP = 3 * 512;
 [28 * 512] = 0;
 
-//setting per-process page table of init
+//setting per-process open file table of init
 i = READY_LIST + 15;
 while(i<READY_LIST + 31) do
 	[i] = -1;
 	i = i + 1;
 endwhile;
-
-//loading user process
-load(29,25);		//loading user prog
-alias ptbr_p1 S0;
-ptbr_p1 = 1024 + 1 * 8;
-[ptbr_p1 + 0] = 29;
-[ptbr_p1 + 1] = "01";
-[ptbr_p1 + 2] = -1;
-[ptbr_p1 + 3] = "00";
-[ptbr_p1 + 4] = -1;
-[ptbr_p1 + 5] = "00";
-[ptbr_p1 + 6] = 30;
-[ptbr_p1 + 7] = "01";
-[READY_LIST + 32] = 1;
-[READY_LIST + 33] = 1;
-[READY_LIST + 34] = 3 * 512;
-[READY_LIST + 35] = 3 * 512;
-[READY_LIST + 36] = 0;
-[READY_LIST + 37] = ptbr_p1;
-[READY_LIST + 38] = 4;
-	
 ireturn;

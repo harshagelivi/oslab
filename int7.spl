@@ -1,2 +1,2 @@
-print "int 7";
+print "in int7";
 halt;
