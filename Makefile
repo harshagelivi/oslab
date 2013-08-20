@@ -1,4 +1,4 @@
-default:os_startup.xsm init.xsm int1.xsm int2.xsm int3.xsm int4.xsm int5.xsm int6.xsm int7.xsm exhandler.xsm timer.xsm
+default:os_startup.xsm init.xsm int1.xsm int2.xsm int3.xsm int4.xsm int5.xsm int6.xsm int7.xsm exhandler.xsm timer.xsm x1.xsm x2.xsm
 os_startup.xsm:os.spl
 	$(spl)/spl --os os.spl
 init.xsm:init.apl
@@ -20,4 +20,8 @@ int7.xsm:int7.spl
 exhandler.xsm:exhandler.spl
 	$(spl)/spl --exhandler exhandler.spl
 timer.xsm:timer.spl
-	$(spl)/spl --int=timer timer.spl		
+	$(spl)/spl --int=timer timer.spl
+x1.xsm:x1.apl
+	$(apl)/apl x1.apl	
+x2.xsm:x2.apl
+	$(apl)/apl x2.apl		

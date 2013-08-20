@@ -1,5 +1,5 @@
-print "int 2";
-
+//print "int 2";
+breakpoint;
 //aliases
 alias physicalSP S0;
 alias sysno S1;
@@ -20,7 +20,7 @@ perp = READY_LIST + ((PTBR - 1024)/8)*32 + 15;
 arg1 = [([PTBR + 2 * ((SP-3) / 512)] * 512) + ((SP-3) % 512)];		
 
 if(sysno == 2) then
-	print "in open";
+//	print "in open";
 	ft = FAT;
 	while((ft - FAT < 512)&&([ft]!=arg1)) do
 		ft = ft + 8;
@@ -65,7 +65,7 @@ if(sysno == 2) then
 	breakpoint;
 endif;
 if(sysno==3)then
-	print "in close";
+//	print "in close";
 	if((arg1>=0)&&(arg1<8))then
 		perp = perp + arg1*2;
 		if([perp]!=-1)then

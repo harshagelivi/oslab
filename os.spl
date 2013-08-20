@@ -1,4 +1,4 @@
-print "in startup";
+//print "in startup";
 //aliases
 alias i S0;
 

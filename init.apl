@@ -2,17 +2,17 @@
 
 integer main()
 {	
-	integer a,b,c,d,e,f,g;
+	integer a,b;
 	a=Open("hello.dat");
-	print("before fork");
-	c=Fork();
+	b=Fork();
 	print("after fork");
-	if(c==-2)then
+	if(b==-2)then
 		print("in child");
-		print("oo la la");
+		a=Exec("x1.xsm");
+		print("sxs");
 	else
 		print("in parent");
-	endif;		
-	print("yay");
+	endif;
+	print("yayyy");		
 	return 0;
 }

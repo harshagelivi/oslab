@@ -9,3 +9,5 @@ load --int=6 $osl/int6.xsm
 load --int=7 $osl/int7.xsm
 load --exhandler $osl/exhandler.xsm
 load --int=timer $osl/timer.xsm
+load --exec $osl/x1.xsm
+load --exec $osl/x2.xsm

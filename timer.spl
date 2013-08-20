@@ -1,4 +1,4 @@
-print "in timer";
+//print "in timer";
 
 //aliases
 alias c_pid S0;

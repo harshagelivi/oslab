@@ -1,4 +1,4 @@
-print "in int5";
+//print "in int5";
 
 //aliases
 alias sysno S0;
@@ -22,7 +22,7 @@ ppid = (PTBR - PAGE_TABLE)/8;
 ppcb = READY_LIST + ppid*32;
 
 if(sysno==8)then
-	print "in fork";
+//	print "in fork";
 	i = READY_LIST;
 	while((i<FAT)&&([i + 1]!=0))do
 		i = i + 32;
