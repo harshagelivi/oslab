@@ -1,0 +1,31 @@
+print "exception is raised";
+//aliases
+alias cause S0;
+alias vpage S1;
+alias ip S2;
+
+cause = EFR % 10;
+vpage = (EFR / 10) % 100;
+Ip = (EFR/1000);
+
+if(cause==0)then
+
+endif;
+if(cause==1)then
+	print "ill instrxn";
+	inline 11776;
+endif;
+if(cause==2)then
+	print "ill mem acc";
+	inline 11776;	
+endif;
+if(cause==3)then
+	print "arithm excep";
+	inline 11776;	
+endif;
+if(cause==4)then
+	print "ill oper";
+	inline 11776;	
+endif;
+
+breakpoint;
