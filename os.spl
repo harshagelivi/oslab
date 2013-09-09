@@ -77,6 +77,7 @@ endwhile;
 //setting up init pcb
 [READY_LIST + 0] = 0;
 [READY_LIST + 1] = 2;
+[READY_LIST + 31] = 0;
 PTBR = 1024;
 PTLR = 4;
 [PTBR + 0] = 25;

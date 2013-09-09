@@ -1,4 +1,4 @@
-print "in int4";
+//print "in int4";
 
 //aliases
 alias sysno S0;
@@ -19,7 +19,7 @@ fd = [([PTBR + 2 * ((SP-4) / 512)] * 512) + ((SP-4) % 512)];
 perp = READY_LIST + ((PTBR - 1024)/8)*32 + 15;
 
 if(sysno==5)then
-	print "in write";
+//	print "in write";
 	if((fd>=0)&&(fd<8))then
 		if([perp + fd*2]!=-1)then
 			soft_ind = [perp + fd*2];
@@ -54,9 +54,9 @@ if(sysno==5)then
 	else
 		res = -1;
 	endif;
-	breakpoint;
 endif;
 [([PTBR + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = res;
 store(5,19);
 store(6,20);
+breakpoint;
 ireturn;

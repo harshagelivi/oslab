@@ -1,4 +1,4 @@
-print "in int3";
+//print "in int3";
 
 //aliases
 alias sysno S0;
@@ -19,7 +19,7 @@ fd = [([PTBR + 2 * ((SP-4) / 512)] * 512) + ((SP-4) % 512)];
 perp = READY_LIST + ((PTBR - 1024)/8)*32 + 15;
 
 if(sysno==6)then
-	print "in seek";
+//	print "in seek";
 	if((fd>=0)&&(fd<8))then
 		soft_ind = [perp + fd*2];
 		if(soft_ind!=-1)then
@@ -37,11 +37,10 @@ if(sysno==6)then
 	else
 		res = -1;
 	endif;
-	breakpoint;
 endif;
 
 if(sysno==7)then
-	print "in read";
+//	print "in read";
 	if((fd>=0)&&(fd<8))then
 		soft_ind = [perp + fd*2];
 		if(soft_ind!=-1)then
@@ -66,7 +65,7 @@ if(sysno==7)then
 	else
 		res = -1;
 	endif;
-	breakpoint;	
 endif;
+breakpoint;
 [([PTBR + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = res;
 ireturn;

@@ -1,5 +1,5 @@
 START
-MOV T0,  "exception is raised"
+MOV T0,  "excption"
 OUT T0
-BRKP
+HALT
 HALT

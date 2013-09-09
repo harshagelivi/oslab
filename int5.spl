@@ -90,6 +90,7 @@ if(sysno==8)then
 			[chpcb + 12] = R5;
 			[chpcb + 13] = R6;
 			[chpcb + 14] = R7;
+			[chpcb + 31] = ppid;
 			i = 0;
 			while(i<8)do
 				if([ppcb + 15 + i]!=-1)then
@@ -106,7 +107,7 @@ if(sysno==8)then
 			res = -1;
 		endif;
 	endif;
-	breakpoint;
+//	breakpoint;
 endif;
 
 [psp - 2] = res;

@@ -62,7 +62,6 @@ if(sysno == 2) then
 			[soft_e + 1] = [soft_e + 1] + 1;
 		endif;	
 	endif;
-	breakpoint;
 endif;
 if(sysno==3)then
 //	print "in close";
@@ -86,7 +85,7 @@ if(sysno==3)then
 	else
 		res = -1;	
 	endif;
-	breakpoint;
 endif;
 [([PTBR + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = res;
+breakpoint;
 ireturn;

@@ -7,10 +7,16 @@ alias physicalSP S2;
 alias newpcb S3;
 alias newpid S4;
 
+
 c_pid = (PTBR - 1024) / 8;
 c_pcb = READY_LIST + 32 * c_pid;
 
-[c_pcb + 1] = 1;
+if(S15!="fromwait")then
+	[c_pcb + 1] = 1;
+else
+	//print "fromwait";
+	S15="";
+endif;
 [ c_pcb + 2 ] = BP;
 [ c_pcb + 3 ] = SP - 1;
 
@@ -60,5 +66,5 @@ alias newphysicalSP S2;
 newphysicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512); 
 [ newphysicalSP ] = [ newpcb + 4 ];
 [newpcb + 1] = 2;
-breakpoint;
+//breakpoint;
 ireturn;

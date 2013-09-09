@@ -1,2 +1,2 @@
-print "exception is raised";
-breakpoint;
+print "excption";
+halt;
