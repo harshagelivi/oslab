@@ -1,4 +1,13 @@
-integer main(){
-	print("in 2nd prog");
+integer main()
+{
+	integer childpid, retval;
+	childpid = Fork();
+	if(childpid == -2) then
+		retval = Exec("x2.xsm");
+	else
+		while(childpid != -1) do
+			print(childpid);
+		endwhile;
+	endif;
 	return 0;
-}	
+}

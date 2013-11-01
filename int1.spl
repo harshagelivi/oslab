@@ -105,5 +105,5 @@ endif;
 [([PTBR + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = res;
 store(5,19);
 store(6,20);
-breakpoint;
+//breakpoint;
 ireturn;

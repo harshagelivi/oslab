@@ -1,4 +1,5 @@
 integer main(){
-	print("in 1st prog");
+	integer a,b,c,d;
+	print("in x1");
 	return 0;
 }	

@@ -1,6 +1,7 @@
 integer main(){
 	integer a,b,c,d;
 	string cmd,prompt;
+	print(Create("first.dat"));
 	prompt = "gelivi:~$ ";
 	cmd="";
 	while(cmd!="end")do
@@ -11,10 +12,13 @@ integer main(){
 			b=Exec(cmd);
 			if(b==-1)then
 				print(b);
+			else
+				print "success";	
 			endif;	
 		endif;
 		d=Wait(a);
-		breakpoint;
+//		breakpoint;
 	endwhile;
+	breakpoint;
 	return 0;
 }

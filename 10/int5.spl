@@ -32,7 +32,7 @@ if(sysno==8)then
 	else
 		chpid = (i-READY_LIST)/32;
 		chpcb = i;
-		i = MEM_LIST + 29;
+		i = MEM_LIST + 25;
 		while((i<FILE_TABLE)&&([i]==1))do
 			i = i + 1;
 		endwhile;
@@ -41,7 +41,7 @@ if(sysno==8)then
 		else
 			[i] = 1;
 			j = 0;
-			src = PTBR + 6 + j;
+			src = PTBR + 6;
 			dst = (i-MEM_LIST)*512;
 			while(j<512)do
 				[dst + j] = [src + j];

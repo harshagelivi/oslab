@@ -8,17 +8,44 @@ alias soft_e S3;
 alias cpcb S4;
 alias newpcb S5;
 alias j S6;
+alias dpid S7;
+alias wpid S8;
 
+dpid=(PTBR-PAGE_TABLE)/8;
 psp = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
 sysno = [psp - 1];
+wpid=[psp-3];
 
+if(sysno==13)then
+//	print "in wait";
+	if((wpid==dpid)||([READY_LIST +32*wpid+1]==0))then
+		[psp-2]=-1;
+	else
+		[READY_LIST+dpid*32+1]=100+wpid;
+		[psp-2]=0;
+		S15="fromwait";
+		inline "JMP 04608";	
+	endif;
+endif;
+if(sysno==14)then
+//	print "in signal";
+	i=READY_LIST;
+	while(i<FAT)do
+		if([i+1]==100+dpid)then
+			[i+1]=1;
+		endif;
+		i=i+32;
+	endwhile;
+	[psp-2]=0;
+endif;
 if(sysno==10)then
-//	print "in exit";
+	print "in exit";
 	i = READY_LIST;
-	while(([i + 1]!=1)&&(i<FAT))do
+	while(([i + 1]!=1)&&(i<FAT)&&([i+1]!=100+dpid))do
 		i = i + 32;
 	endwhile;
 	if(i==FAT)then
+		breakpoint;
 		halt;
 	else
 		newpcb = i;
@@ -47,10 +74,13 @@ if(sysno==10)then
 		while(i<PTBR+8)do
 			if([i]!=-1)then
 				if([i]>447)then
-					[DISK_LIST + [i]] = [DISK_LIST + [i]] - 1;
+					[DISK_LIST+[i]]=[DISK_LIST+[i]]-1;
 				else
-					[MEM_LIST + [i]] = [MEM_LIST + [i]] - 1;
-				[i]=-1;
+					if(([i+1]=="01")&&([i+1]=="11"))then
+						[MEM_LIST+[i]]=[MEM_LIST+[i]]-1;
+					endif;
+				endif;
+				[i] = -1;
 			endif;
 			[i + 1] = "00";
 			i = i + 2;
@@ -74,7 +104,7 @@ if(sysno==10)then
 		[ newphysicalSP ] = [ newpcb + 4 ];
 		[newpcb + 1] = 2;		
 	endif;
+//	breakpoint;
 endif;	
-store(6,20);
-breakpoint;
+//breakpoint;
 ireturn;

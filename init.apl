@@ -1,26 +1,25 @@
 integer main(){
-	integer a,b,i,c,d;
-	b=Fork();
-	if(b==-2)then
-		c=Fork();
-		if(c==-2)then
-			i=0;
-			while(i<100)do
-				i=i+1;
-			endwhile;
-			print(Getpid());
-			print(Getppid());
-			print(Signal());
-			print("111");
+	integer a,b,c,d;
+	string cmd,prompt;
+	prompt = "gelivi:~$ ";
+	cmd="";
+	while(cmd!="end")do
+		print(prompt);
+		read(cmd);
+		a=Fork();
+		if(a==-2)then
+			b=Exec(cmd);
+			if(b==-1)then
+				print(1000);
+				breakpoint;
+			else
+				print( "success");	
+			endif;	
 		else
-			print("112");
-			print(Wait(c));
-			print("113");	
+			d=Wait(a);
+//			breakpoint;
 		endif;
-	else
-		print("114");
-		print(Wait(b));
-		print("115");
-	endif;	
+	endwhile;
+//	breakpoint;
 	return 0;
 }

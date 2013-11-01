@@ -32,50 +32,38 @@ if(sysno==8)then
 	else
 		chpid = (i-READY_LIST)/32;
 		chpcb = i;
-		novp = 0;
-		nopa = 0;
-		i = PTBR;
-		while(i<PTBR+8)do
-			if([i]!=-1)then
-				novp = novp + 1;
-			endif;
-			i = i + 2;
-		endwhile;
-		i = MEM_LIST + 29;
-		while((nopa<novp)&&(i<FILE_TABLE))do
-			if([i]==0)then
-				nopa = nopa + 1;
-			endif;
+		[chpcb]=chpid;
+		i = MEM_LIST + 25;
+		while((i<FILE_TABLE)&&([i]!=0))do
 			i = i + 1;
 		endwhile;
-		if(nopa==novp)then
-			[chpcb] = chpid;
-			i = chpcb + 15;
-			while(i<chpcb+31)do
-				[i] = -1;
-				i = i + 1;
+		if(i==FILE_TABLE)then
+			res = -1;
+		else
+			[i] = 1;
+			j = 0;
+			src = [PTBR + 6]*512;
+			dst = (i-MEM_LIST)*512;
+			while(j<512)do
+				[dst + j] = [src + j];
+				j = j + 1;
 			endwhile;
-			i = PTBR;
-			j = MEM_LIST + 29;
-			while(i<PTBR+8)do
-				if([i]!=-1)then
-					while([j]!=0)do
-						j = j + 1;
-					endwhile;
-					src = [i]*512;
-					dst = (j-MEM_LIST)*512;
-					k = 0;
-					while(k<512)do
-						[dst] = [src];
-						dst = dst + 1;
-						src = src + 1;
-						k = k + 1;
-					endwhile;
-					[j] = 1;
-					[PAGE_TABLE + chpid*8 + i-PTBR] = j-MEM_LIST;
-					[PAGE_TABLE + chpid*8 + i-PTBR + 1] = "01";
+			[PAGE_TABLE + chpid*8 + 6] = i-MEM_LIST;
+			[PAGE_TABLE + chpid*8 + 7] = "01";
+			i=PTBR;
+			j=PAGE_TABLE + chpid*8;
+			while(i<PTBR+6)do
+				[j] = [i];
+				[j + 1] = [i + 1];
+				if(([i + 1]=="01")||([i + 1]=="11"))then
+					[ MEM_LIST + [i] ] = [ MEM_LIST + [i] ] + 1;
+				else
+					if([i]>447)then
+						[DISK_LIST + [i]] = [DISK_LIST + [i]] + 1;
+					endif;	
 				endif;
 				i = i + 2;
+				j = j + 2;
 			endwhile;
 			[chpcb + 5] = PAGE_TABLE + chpid*8;			//ptbr
 			[chpcb + 6] = 4;			
@@ -103,12 +91,10 @@ if(sysno==8)then
 			[chpcb + 1] = 1;
 			res = chpid;
 			[([[chpcb + 5] + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = -2;
-		else
-			res = -1;
 		endif;
 	endif;
-//	breakpoint;
 endif;
-
+store(6,20);
 [psp - 2] = res;
+breakpoint;
 ireturn;

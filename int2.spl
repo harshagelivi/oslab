@@ -1,5 +1,5 @@
 //print "int 2";
-breakpoint;
+//breakpoint;
 //aliases
 alias physicalSP S0;
 alias sysno S1;
@@ -87,5 +87,8 @@ if(sysno==3)then
 	endif;
 endif;
 [([PTBR + 2 * ((SP-2) / 512)] * 512) + ((SP-2) % 512)] = res;
-breakpoint;
+if(res==-1)then
+	breakpoint;
+endif;	
+
 ireturn;

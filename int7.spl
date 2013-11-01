@@ -10,7 +10,8 @@ alias newpcb S5;
 alias j S6;
 alias dpid S7;
 alias wpid S8;
-
+alias newphysicalSP S9; 
+		
 dpid=(PTBR-PAGE_TABLE)/8;
 psp = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512);
 sysno = [psp - 1];
@@ -45,7 +46,6 @@ if(sysno==10)then
 		i = i + 32;
 	endwhile;
 	if(i==FAT)then
-		breakpoint;
 		halt;
 	else
 		newpcb = i;
@@ -73,7 +73,13 @@ if(sysno==10)then
 		i = PTBR;
 		while(i<PTBR+8)do
 			if([i]!=-1)then
-				[MEM_LIST + [i]] = 0;
+				if([i]>447)then
+					[DISK_LIST+[i]]=[DISK_LIST+[i]]-1;
+				else
+					if(([i+1]=="01")&&([i+1]=="11"))then
+						[MEM_LIST+[i]]=[MEM_LIST+[i]]-1;
+					endif;
+				endif;
 				[i] = -1;
 			endif;
 			[i + 1] = "00";
@@ -93,12 +99,11 @@ if(sysno==10)then
 		R7 = [newpcb + 14];
 
 		SP = SP + 1; 
-		alias newphysicalSP S2; 
 		newphysicalSP = ([PTBR + 2 * (SP / 512)] * 512) + (SP % 512); 
 		[ newphysicalSP ] = [ newpcb + 4 ];
 		[newpcb + 1] = 2;		
 	endif;
-	breakpoint;
+//	breakpoint;
 endif;	
 //breakpoint;
 ireturn;

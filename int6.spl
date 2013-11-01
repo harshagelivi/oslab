@@ -30,40 +30,33 @@ if(sysno==9)then
 		i = i + 8;
 	endwhile;
 	if(i==DISK_LIST)then
-		[psp-2] = -1;
+		res = -1;
 	else
 		if([i + 1]<2048)then
 			bblock = [i + 2];
 			load(1,bblock);
 			i = PTBR;
 			j = SCRATCHPAD;
-			k = MEM_LIST + 29;
-			while(([i]!=-1)&&(i<PTBR+6)&&([j]!=-1))do
-				load([i],[j]);
-				j = j + 1;
-				i = i + 2;
-			endwhile;					
-			if(i<PTBR+6)then
-				if(([i]!=-1)&&([j]==-1))then
-					while(i<PTBR+6)do
-						[MEM_LIST + [i]] = 0;
-						[i + 1] = "00";
-						i = i + 2;
-					endwhile;
+			k = MEM_LIST + 25;
+			while(i<PTBR+6)do
+				if(([i+1]=="01") || ([i+1]=="11"))then
+					[MEM_LIST + [i]] = [MEM_LIST + [i]] - 1;
 				else
-					if(([i]==-1)&&([j]!=-1))then
-						while([j]!=-1)do
-							while([k]!=0)do
-								k = k + 1;
-							endwhile;
-							load(k-MEM_LIST,[j]);
-							[k] = 1;
-							[i + 1] = "01";
-							j = j + 1;							
-						endwhile;
-					endif;	
+					if([i]>447)then
+						[DISK_LIST + [i]] = [DISK_LIST + [i]] - 1;
+					endif;
 				endif;
-			endif;
+				if([j]!=-1)then
+					[i] = [j];
+					[i+1] = "00";
+					j = j + 1;
+				else
+					[i]=-1;
+					[i+1]="00";	
+				endif;
+				i=i+2;
+			endwhile;
+			[i + 1] = "01";
 			cpcb = READY_LIST + ((PTBR-1024)/8)*32;
 			i = cpcb + 15;
 			while(i<cpcb+31)do
@@ -78,14 +71,17 @@ if(sysno==9)then
 						endif;
 					endif;
 				endif;
+				[i]=-1;
+				[i+1]=-1;
 				i = i + 2;
 			endwhile;
 			SP = 3*512;
 			[([PTBR + 2 * (SP / 512)] * 512) + (SP % 512)] = 0;
 		else
-			[psp - 2] = -1;
+			[psp-2]=-1;
 		endif;
 	endif;	
 endif;
+store(6,20);
 //breakpoint;
 ireturn;
